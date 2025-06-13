@@ -1,4 +1,4 @@
-name: Test, Lint and Deploy
+name: Test, Lint and Deploy (One Job)
 on:
   push
 permissions: {}
