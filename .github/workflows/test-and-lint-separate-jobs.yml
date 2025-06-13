@@ -4,10 +4,10 @@ on:
 permissions: {}
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       packages: read
       # To report GitHub Actions status checks
       statuses: write
@@ -28,7 +28,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FIX_TERRAFORM_FMT: true
           VALIDATE_CHECKOV: false
-
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
@@ -50,4 +65,36 @@ jobs:
       - name: Terraform Apply
         id: apply
         run: echo "Deploying..."
-
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+      - name: Terraform Apply
+        id: apply
+        run: echo "Deploying..."
