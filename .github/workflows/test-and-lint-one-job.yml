@@ -12,6 +12,10 @@ jobs:
       # To report GitHub Actions status checks
       statuses: write
     steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Terraform Setup
@@ -20,6 +24,7 @@ jobs:
         uses: super-linter/super-linter@v7.4.0 # x-release-please-version
         env:
           # To report GitHub Actions status checks
+          DEFAULT_BRANCH: ${{github.ref_name}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FIX_TERRAFORM_FMT: true
       - name: Terraform fmt
