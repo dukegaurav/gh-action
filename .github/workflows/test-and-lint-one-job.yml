@@ -1,6 +1,8 @@
 name: Test, Lint and Deploy (One Job)
 on:
-  push
+  push:
+    branches:
+      - main
 permissions: {}
 
 jobs:
@@ -12,6 +14,8 @@ jobs:
       # To report GitHub Actions status checks
       statuses: write
     steps:
+      - name: Output Event Data
+        run: echo "${{ toJSON(github.event) }}"
       - name: Checkout master
         uses: actions/checkout@v4
         with:
