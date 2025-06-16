@@ -1,0 +1,15 @@
+name: Issue Listner
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - closed
+      - reopened
+
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "${{ toJSON(github.event) }}"
