@@ -1,4 +1,4 @@
-name: Test, Lint and Deploy
+name: Issue Listner
 on:
   issues:
     types:
