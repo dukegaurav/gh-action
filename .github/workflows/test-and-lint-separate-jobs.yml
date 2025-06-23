@@ -84,7 +84,7 @@ jobs:
             junit.xml
       - name: Publish Auther Name
         id: publish
-        run: echo "author-fname=Gaurav >> $GITHUB_OUTPUT"
+        run: echo "author-fname=Gaurav" >> $GITHUB_OUTPUT
       - name: Publish Auther Name (old-syntax)
         id: publish-old
         run: echo "::set-output name=author-lname::Agrawal" # github will remove this in future.
