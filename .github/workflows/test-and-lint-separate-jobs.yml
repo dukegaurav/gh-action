@@ -46,6 +46,9 @@ jobs:
       packages: read
       # To report GitHub Actions status checks
       statuses: write
+    outputs:
+      fname-output: ${{steps.publish.outputs.author-fname}}
+      lname-output: ${{steps.publish-old.outputs.author-lname}}
     steps:
       - name: Checkout master
         uses: actions/checkout@v4
@@ -79,6 +82,12 @@ jobs:
           path: |
             tfplan
             junit.xml
+      - name: Publish Auther Name
+        id: publish
+        run: echo "author-fname=Gaurav >> $GITHUB_OUTPUT"
+      - name: Publish Auther Name (old-syntax)
+        id: publish-old
+        run: echo "::set-output name=author-lname::Agrawal" # github will remove this in future.
   apply:
     needs: test
     runs-on: ubuntu-latest
@@ -107,3 +116,7 @@ jobs:
       - name: Terraform Apply
         id: apply
         run: echo "Deploying..."
+      - name: Get the Outputs
+        run: |
+          echo "${{ needs.test.outputs.fname-output}}""
+          echo "${{ needs.test.outputs.lname-output}}""
