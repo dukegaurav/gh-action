@@ -101,7 +101,7 @@ jobs:
       - name: Get Plan Output
         uses: actions/download-artifact@v4.3.0
         with:
-          name: tfplan
+          name: tf-artifacts
       - name: List files
         run: ls
       - name: Terraform Apply
