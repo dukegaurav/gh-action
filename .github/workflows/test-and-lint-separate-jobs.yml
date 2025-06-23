@@ -65,7 +65,7 @@ jobs:
         run: terraform validate -no-color
       - name: Terraform Test
         id: test
-        run: terraform test
+        run: terraform test -junit-xml=junit.xml
         continue-on-error: true
       - name: Terraform Plan
         id: plan
@@ -75,9 +75,10 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: tfplan
+          name: tf-artifacts
           path: |
             tfplan
+            junit.xml
   apply:
     needs: test
     runs-on: ubuntu-latest
