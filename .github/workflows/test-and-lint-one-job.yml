@@ -1,0 +1,60 @@
+name: Test, Lint and Deploy (One Job)
+on:
+  push:
+    # branches:
+    #   - main
+permissions: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+    steps:
+      # - name: Output Event Data
+      #   run: echo "${{ toJSON(github.event) }}"
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.0"
+      # - name: Super-linter
+      #   uses: super-linter/super-linter@v7.4.0 # x-release-please-version
+      #   env:
+      #     # To report GitHub Actions status checks
+      #     DEFAULT_BRANCH: ${{github.ref_name}}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     FIX_TERRAFORM_FMT: true
+      #     VALIDATE_CHECKOV: false
+      #     VALIDATE_JSCPD: false
+      #     FIX_YAML_PRETTIER: true
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Test
+        id: test
+        run: terraform test
+        continue-on-error: true
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+      - name: Terraform Apply
+        id: apply
+        run: echo "Deploying..."
+
